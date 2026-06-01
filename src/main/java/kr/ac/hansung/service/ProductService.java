@@ -10,6 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -38,5 +41,15 @@ public class ProductService {
     @Transactional
     public void deleteById(Long id) {
         productRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Product> getProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Product> searchProducts(String keyword, Pageable pageable) {
+        return productRepository.findByNameContaining(keyword, pageable);
     }
 }
