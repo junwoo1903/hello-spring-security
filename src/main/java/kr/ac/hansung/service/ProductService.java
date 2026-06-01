@@ -42,6 +42,19 @@ public class ProductService {
     public void deleteById(Long id) {
         productRepository.deleteById(id);
     }
+    @Transactional
+    public Product updateProduct(Long id, ProductDto dto) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다: " + id));
+        // 더티 체킹으로 자동 UPDATE
+        product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
+        product.setStock(dto.getStock());
+        if (dto.getDescription() != null) {
+            product.setDescription(dto.getDescription());
+        }
+        return product;
+    }
 
     @Transactional(readOnly = true)
     public Page<Product> getProducts(Pageable pageable) {
